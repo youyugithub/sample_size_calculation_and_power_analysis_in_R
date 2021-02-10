@@ -41,3 +41,26 @@ f2<-(R2full-R2reduced)/(1-R2full)
 
 wp.regression(p1=3,p2=2,f2=f2,alpha=0.05,power=0.8)
 ```
+
+## Survival
+
+```
+
+library(powerSurvEpi)
+logHR<-2
+ssizeEpiCont.default(
+  power = 0.8,
+  theta = 1.55,
+  sigma2 = 1,
+  psi = 0.5,
+  rho2 = 0.0,
+  alpha = 0.05)
+
+ssizeEpiCont.default(
+  power = 0.8,
+  theta = 1.85,
+  sigma2 = 1,
+  psi = 0.5,
+  rho2 = 0.0,
+  alpha = 0.05)
+```
