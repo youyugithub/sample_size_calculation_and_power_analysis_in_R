@@ -85,3 +85,21 @@ for(sim in 1:nsim){
 }
 reject/nsim
 ```
+
+## correlation and R2
+
+```
+library(MASS)
+
+allR<-c()
+for(sim in 1:10000){
+  Sigma<-matrix(c(1,0.3,0.3,1),2,2)
+  xx<-mvrnorm(100,c(0,0),Sigma)
+  x1<-xx[,1]
+  x2<-xx[,2]
+  allR[sim]<-summary(lm(x1~x2))$r.squared
+}
+
+summary(lm(x1~x2))$r.squared
+cor(x1,x2)^2
+```
