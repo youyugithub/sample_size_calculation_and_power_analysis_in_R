@@ -42,7 +42,7 @@ f2<-(R2full-R2reduced)/(1-R2full)
 wp.regression(p1=3,p2=2,f2=f2,alpha=0.05,power=0.8)
 ```
 
-## Survival
+## Survival Continuous
 
 ```
 
@@ -63,4 +63,25 @@ ssizeEpiCont.default(
   psi = 0.5,
   rho2 = 0.0,
   alpha = 0.05)
+```
+
+```
+library(survival)
+
+nsim<-10000
+reject<-0
+for(sim in 1:nsim){
+  if(sim%%100==0)cat(sim,"|")
+  nind<-82
+  xx<-rnorm(nind)
+  HR<-1.56
+  beta<-logHR<-log(HR)
+  ft<-rexp(nind)*exp(-beta*xx)
+  ct<-quantile(ft,0.5)
+  ot<-pmin(ft,ct)
+  delta<-ft<=ct
+  CI<-confint(coxph(Surv(ot,delta)~xx))["xx",]
+  if(all(CI>=0))reject<-reject+1
+}
+reject/nsim
 ```
