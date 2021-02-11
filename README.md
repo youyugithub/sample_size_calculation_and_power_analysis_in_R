@@ -103,3 +103,19 @@ for(sim in 1:10000){
 summary(lm(x1~x2))$r.squared
 cor(x1,x2)^2
 ```
+
+## Two-sample variance
+
+```
+ratio<-1.48
+nsim<-100000
+reject<-0
+for(sim in 1:nsim){
+  if(sim%%1000==0)print(sim)
+  x1<-rnorm(82,0,sd=1*ratio)
+  x2<-rnorm(42,0,sd=1)
+  if(var.test(x1,x2,alternative="greater")$p.value<0.025)reject<-reject+1
+}
+reject/nsim
+
+```
