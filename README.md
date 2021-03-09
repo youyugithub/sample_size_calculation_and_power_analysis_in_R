@@ -104,6 +104,11 @@ summary(lm(x1~x2))$r.squared
 cor(x1,x2)^2
 ```
 
+```
+library(seqtest)
+size.cor(rho=0.6, 0.2, "two.sided", alpha = 0.05, beta = 0.1, output = TRUE)
+```
+
 ## Two-sample variance
 
 ```
