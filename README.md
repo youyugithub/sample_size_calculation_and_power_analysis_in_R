@@ -124,3 +124,7 @@ for(sim in 1:nsim){
 reject/nsim
 
 ```
+
+## Survival two groups
+
+Number of Events needed $d=(z_\beta+z_\alpha)^2[(1+HR)/(1-HR)]^2\approx$
