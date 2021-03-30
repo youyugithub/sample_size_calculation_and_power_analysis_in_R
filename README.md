@@ -127,4 +127,4 @@ reject/nsim
 
 ## Survival two groups
 
-Number of Events needed $d=(z_\beta+z_\alpha)^2[(1+HR)/(1-HR)]^2\approx$
+Number of Events needed $d=(z_\beta+z_\alpha)^2/(P_A P_B \log HR)^2$
