@@ -128,3 +128,34 @@ reject/nsim
 ## Survival two groups
 
 Number of Events needed $d=(z_\beta+z_\alpha)^2/(P_A P_B \log HR)^2$
+
+## For two sample survival, information can be approximated by ndeath*P0*P1
+
+```
+library(survival)
+
+n_pl<-60
+n_tr<-60
+
+lambda_pl<--log(0.5)/2
+lambda_tr<-0.43*lambda_pl
+
+allvar<-rep(NA,10000)
+for(sim in 1:10000){
+  if(sim%%100==0)print(sim)
+  Fi_pl<-rexp(n_pl,lambda_pl)
+  Fi_tr<-rexp(n_tr,lambda_tr)
+  
+  Fi<-c(Fi_pl,Fi_tr)
+  Ci<-sort(Fi)[50]
+  Ti<-pmin(Fi,Ci)
+  deltai<-Fi<=Ci
+  treat<-rep(c(0,1),c(n_pl,n_tr))
+  
+  fit<-survreg(Surv(Ti,deltai)~treat)
+  allvar[sim]<-fit$var["treat","treat"]
+}
+
+mean(1/allvar)
+50*(1/3)*(2/3)
+```
