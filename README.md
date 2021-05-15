@@ -182,4 +182,8 @@ numerator+denominator==sum((y-mean(y))^2)
 library(pwr)
 pwr.anova.test(k=4,n=22,power=0.80,sig.level=0.05)$f
 sqrt(pwr.f2.test(u=4-1,v=88-4,power=0.80,sig.level=0.05)$f2)
+library(WebPower)
+wp.anova(k=4,n=88,power=0.8,alpha=0.05)
 ```
+
+
