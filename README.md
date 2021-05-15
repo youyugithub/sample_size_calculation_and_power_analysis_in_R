@@ -159,3 +159,27 @@ for(sim in 1:10000){
 mean(1/allvar)
 50*(1/3)*(2/3)
 ```
+
+# F test related
+```
+set.seed(0)
+
+y<-rnorm(100)
+x<-rep(LETTERS[1:4],each=25)
+fit<-lm(y~x)
+pred<-predict(fit)
+
+anova(fit)$`F value`[1]
+anova(fit)$`Pr(>F)`[1]
+
+numerator<-sum((pred-mean(y))^2)
+df_numerator<-4-1
+denominator<-sum((y-pred)^2)
+df_denominator<-100-4
+my_f<-(numerator/df_numerator)/(denominator/df_denominator)
+numerator+denominator==sum((y-mean(y))^2)
+
+library(pwr)
+pwr.anova.test(k=4,n=22,power=0.80,sig.level=0.05)$f
+sqrt(pwr.f2.test(u=4-1,v=88-4,power=0.80,sig.level=0.05)$f2)
+```
