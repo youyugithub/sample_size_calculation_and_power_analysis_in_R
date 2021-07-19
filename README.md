@@ -127,7 +127,7 @@ reject/nsim
 
 ## Survival two groups
 
-Number of Events needed $d=(z_\beta+z_\alpha)^2/(P_A P_B \log HR)^2$
+Number of Events needed $d=(z_\beta+z_\alpha)^2/[P_A P_B (\log HR)^2]$
 
 ## For two sample survival, information can be approximated by ndeath*P0*P1
 
