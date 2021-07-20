@@ -129,6 +129,18 @@ reject/nsim
 
 Number of Events needed $d=(z_\beta+z_\alpha)^2/[P_A P_B (\log HR)^2]$
 
+#### Freedman's
+
+TABLES OF THE NUMBER OF PATIENTS REQUIRED IN CLINICAL TRIALS USING THE LOGRANK TEST 
+
+https://eclass.uoa.gr/modules/document/file.php/MATH301/PracticalSession2/Freedman2006.pdf
+
+Allocation ratio: $\phi:1$
+Hazard ratio: $\theta:1$
+
+Number of Events needed: $d=(z_\beta+z_\alpha)^2(1+\theta\phi)^2/(1-\theta)/\phi$
+Total numbers needed: $d*(1+\phi)/(\phi*(1-P_1)+(1-P_2))$
+
 ## For two sample survival, information can be approximated by ndeath*P0*P1
 
 ```
