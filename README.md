@@ -141,6 +141,34 @@ Hazard ratio: $\theta:1$
 Number of Events needed: $d=(z_\beta+z_\alpha)^2(1+\theta\phi)^2/(1-\theta)/\phi$
 Total numbers needed: $d*(1+\phi)/(\phi*(1-P_1)+(1-P_2))$
 
+```
+# sample size
+
+# Control: 2-year survival 0.5
+# Treatment: HR 0.5 less event
+
+# Freedman's
+HR<-0.5
+S0_2y<-0.6
+S1_2y<-exp(HR*log(S0_2y))
+hazard0<--log(S0_2y)/2
+hazard1<--log(S1_2y)/2
+# because HR==log(S1_2y)/log(S0_2y)
+ratio<-2
+d1<-(1+HR*ratio)^2/(1-HR)^2/ratio*(qnorm(0.975)+qnorm(0.8))^2
+d1*(1+ratio)/(ratio*(1-S0_2y)+(1-S1_2y))
+
+# Schoenfeld's
+HR<-0.5
+d2<-(qnorm(0.975)+qnorm(0.8))^2/(1/3*2/3*log(HR)^2)
+d2*(1+ratio)/(ratio*(1-S0_2y)+(1-S1_2y))
+
+library(powerSurvEpi)
+powerCT.default(
+  nE=122,nC=61,pE=1-S0_2y,pC=1-S1_2y,
+  RR=0.5,alpha=0.05)
+```
+
 ## For two sample survival, information can be approximated by ndeath*P0*P1
 
 ```
