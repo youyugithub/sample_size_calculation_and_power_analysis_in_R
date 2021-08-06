@@ -226,4 +226,44 @@ library(WebPower)
 wp.anova(k=4,n=88,power=0.8,alpha=0.05)
 ```
 
+# t-test
 
+```
+mu0_log<-0.36
+mu0_exp<-exp(mu0_log)-1
+mu1_exp<-1.5*mu0_exp
+mu1_log<-log(mu1_exp+1)
+sigma<-0.167
+
+reject_B<-rep(0,1000000)
+reject_C<-rep(0,1000000)
+signif_B<-rep(0,1000000)
+signif_C<-rep(0,1000000)
+se<-sigma/sqrt(23/2)
+for(iter in 1:1000000){
+  A<-rnorm(1,mu0_log,se)
+  B<-rnorm(1,mu1_log,se)
+  C<-rnorm(1,mu1_log,se)
+  if(A>B)reject_B[iter]<-1
+  if(A>C)reject_C[iter]<-1
+  if((B-A)>qt(0.95,2*23/2-2)*se)signif_B[iter]<-1
+  if((C-A)>qt(0.95,2*23/2-2)*se)signif_C[iter]<-1
+}
+table(reject_B)/1000000
+table(reject_B+reject_C>0)/1000000
+table(signif_B+signif_C>0)/1000000
+
+table(signif_B)/1000000
+
+reject_B<-rep(0,100000)
+reject_C<-rep(0,100000)
+for(iter in 1:100000){
+  A<-rnorm(1)
+  B<-rnorm(1)
+  C<-rnorm(1)
+  if(A>B)reject_B[iter]<-1
+  if(A>C)reject_C[iter]<-1
+}
+table(reject_B)
+table(reject_B+reject_C)
+```
