@@ -135,6 +135,8 @@ TABLES OF THE NUMBER OF PATIENTS REQUIRED IN CLINICAL TRIALS USING THE LOGRANK T
 
 https://eclass.uoa.gr/modules/document/file.php/MATH301/PracticalSession2/Freedman2006.pdf
 
+Schoenfeld D (1981), The Asymptotic Properties of Nonparametric Tests for Comparing Survival Distributions. Biometrika, 68, 316-319.
+
 Allocation ratio: $\phi:1$
 Hazard ratio: $\theta:1$
 
@@ -167,6 +169,26 @@ library(powerSurvEpi)
 powerCT.default(
   nE=122,nC=61,pE=1-S0_2y,pC=1-S1_2y,
   RR=0.5,alpha=0.05)
+  
+  
+
+library(gsDesign)
+nSurvival(
+  lambda1=???,
+  lambda2=???,
+  Ts=???,
+  Tr=???,
+  eta=???,
+  sided=???,
+  alpha=???,
+  beta=???,
+  ratio=???)
+nEvents(
+  hr=0.6,
+  alpha=0.025,
+  sided=1,
+  beta=0.2,
+  ratio=1)
 ```
 
 ## For two sample survival, information can be approximated by ndeath*P0*P1
