@@ -143,7 +143,7 @@ reject/nsim
 ## Survival two groups
 
 Number of Events needed $d=(z_\beta+z_\alpha)^2/[P_A P_B (\log HR)^2]$
-
+Ref: Sample-Size Formula for the Proportional-Hazards Regression Model
 #### Freedman's
 
 TABLES OF THE NUMBER OF PATIENTS REQUIRED IN CLINICAL TRIALS USING THE LOGRANK TEST 
