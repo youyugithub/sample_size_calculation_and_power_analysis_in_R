@@ -160,7 +160,7 @@ Schoenfeld D (1981), The Asymptotic Properties of Nonparametric Tests for Compar
 Allocation ratio: $\phi:1$
 Hazard ratio: $\theta:1$
 
-Number of Events needed: $d=(z_\beta+z_\alpha)^2(1+\theta\phi)^2/(1-\theta)/\phi$
+Number of Events needed: $d=(z_\beta+z_\alpha)^2(1+\theta\phi)^2/[\phi(1-\theta)^2]$
 Total numbers needed: $d*(1+\phi)/(\phi*(1-P_1)+(1-P_2))$
 
 
