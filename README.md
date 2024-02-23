@@ -179,8 +179,11 @@ hazard0_trt<-HR*hazard0_plc
 # 5-year event probability in placebo and treatment
 event5d0_plc<-1-exp(-hazard0_plc*5)
 event5d0_trt<-1-exp(-hazard0_trt*5)
+# allocation ratio
+AR<-rand_trt/rand_plc
 # 5-year total events
 d_5d0<-ceiling((qnorm(0.975)+qnorm(0.7))^2/(rand_plc*rand_trt*log(HR)^2))
+# d_5d0<-(qnorm(0.975)+qnorm(0.7))^2*(1+HR*AR)^2/(AR*(1-HR)^2)
 # sample size needed
 n_5d0<-d_5d0/(rand_plc*event5d0_plc+rand_trt*event5d0_trt)
 
