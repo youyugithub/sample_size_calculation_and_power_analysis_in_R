@@ -142,8 +142,13 @@ reject/nsim
 
 ## Survival two groups
 
+#### Schoenfeld's
+
 Number of Events needed $d=(z_\beta+z_\alpha)^2/[P_A P_B (\log HR)^2]$
+P_A and P_B are randomization ratios
 Ref: Sample-Size Formula for the Proportional-Hazards Regression Model
+Online tool that use this method: https://biostatistics.mdanderson.org/shinyapps/Nsurvival/
+
 #### Freedman's
 
 TABLES OF THE NUMBER OF PATIENTS REQUIRED IN CLINICAL TRIALS USING THE LOGRANK TEST 
@@ -157,6 +162,64 @@ Hazard ratio: $\theta:1$
 
 Number of Events needed: $d=(z_\beta+z_\alpha)^2(1+\theta\phi)^2/(1-\theta)/\phi$
 Total numbers needed: $d*(1+\phi)/(\phi*(1-P_1)+(1-P_2))$
+
+
+
+```
+# randomization ratios
+rand_plc<-0.5
+rand_trt<-0.5
+# 5-year survival in placebo
+surv5d0_plc<-0.6
+# hazard ratio
+HR<-0.4
+# hazard rate in placebo and treatment
+hazard0_plc<--log(surv5d0_plc)/5
+hazard0_trt<-HR*hazard0_plc
+# 5-year event probability in placebo and treatment
+event5d0_plc<-1-exp(-hazard0_plc*5)
+event5d0_trt<-1-exp(-hazard0_trt*5)
+# 5-year total events
+d_5d0<-ceiling((qnorm(0.975)+qnorm(0.7))^2/(rand_plc*rand_trt*log(HR)^2))
+# sample size needed
+n_5d0<-d_5d0/(rand_plc*event5d0_plc+rand_trt*event5d0_trt)
+
+print(c(d_5d0,n_5d0))
+
+library(survival)
+nsim<-2000
+HR<-0.4
+
+surv5d0_plc<-0.6
+hazard0_plc<--log(surv5d0_plc)/5
+hazard0_trt<-HR*hazard0_plc
+
+all_ci<-matrix(NA,nsim,2)
+all_pvalue<-rep(NA,nsim)
+all_nevent<-rep(NA,nsim)
+for(ii in 1:nsim){
+  set.seed(ii)
+  T0<-rexp(52,rate=hazard0_plc)
+  T1<-rexp(52,rate=hazard0_trt)
+  
+  C0<-rep(5,length(T0))
+  C1<-rep(5,length(T1))
+  
+  time<-pmin(c(T0,T1),c(C0,C1))
+  delta<-(c(T0,T1)<c(C0,C1))
+  x<-rep(c(0,1),c(length(T0),length(T1)))
+  all_nevent[ii]<-sum(delta)
+  
+  # a_fit<-survreg(Surv(time,delta)~x,dist="exponential")
+  # all_pvalue[ii]<-summary(a_fit)$table["x","p"]
+  # all_ci[ii,]<-confint(a_fit)["x",]
+  a_fit<-coxph(Surv(time,delta)~x)
+  all_ci[ii,]<-confint(a_fit)
+  all_pvalue[ii]<-summary(a_fit)$coefficients[,"Pr(>|z|)"]
+}
+table(all_pvalue<0.05)/nsim
+mean(all_nevent)
+```
 
 ```
 # sample size
@@ -304,3 +367,5 @@ for(iter in 1:100000){
 table(reject_B)
 table(reject_B+reject_C)
 ```
+
+
