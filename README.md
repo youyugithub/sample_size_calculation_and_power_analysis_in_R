@@ -538,11 +538,11 @@ interim_tab_t %>%
 # sample size #
 ###############
 
-mu0_log<-0.307
+mu0_log<-0.3
 mu0_exp<-exp(mu0_log)-1
 mu1_exp<-1.5*mu0_exp
 mu1_log<-log(mu1_exp+1)
-sigma<-0.177
+sigma<-0.2
 effect_size<-(mu1_log-mu0_log)/sigma
 
 # 2:1 allocation
