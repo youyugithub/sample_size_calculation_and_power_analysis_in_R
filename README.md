@@ -445,3 +445,138 @@ summary(design1)
 
 ```
 
+
+## interim analysis check
+```
+library(mvtnorm)
+
+rate1<-0.5
+rate2<-1
+
+alpha2<-0.05
+alpha1<-2*(1-pnorm(-qnorm(alpha2/2)/sqrt(rate1)))
+# check: 2*(1-pnorm(-qnorm(alpha2/2)/sqrt(1)))
+
+prob_diff1<-alpha1
+prob_diff2<-alpha2-alpha1
+
+z_boundary1<-qnorm(1-alpha1)
+chisq_boundary1<-z_boundary1^2
+
+mu<-c(0,0)
+sigma<-rbind(
+  c(1,sqrt(rate1)),
+  c(sqrt(rate1),1))
+
+search_z_boundary2<-function(z){
+  pmvnorm(
+    lower=c(-Inf,z),
+    upper=c(z_boundary1,Inf),
+    mean=mu,
+    sigma=sigma)-prob_diff2
+}
+
+z_boundary2<-uniroot(search_z_boundary2,interval=c(-5,5))$root
+chisq_boundary2<-z_boundary2^2
+(1-pnorm(z_boundary2))
+
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+interim_tab <- data.frame(
+  Analysis = c("Interim analysis", "Final primary analysis"),
+  info_fraction = c(0.5, 1),
+  alpha_spent = c(alpha1, alpha2),
+  alpha_one_sided = c(alpha1, alpha2 - alpha1),
+  alpha_two_sided = c(alpha1 * 2, (alpha2 - alpha1) * 2),
+  z_boundary = c(z_boundary1, z_boundary2),
+  chisq_boundary = c(chisq_boundary1, chisq_boundary2)
+)
+
+interim_tab_t <- interim_tab %>%
+  mutate(
+    info_fraction   = sprintf("%.2f", info_fraction),
+    alpha_spent     = sprintf("%.4f", alpha_spent),
+    alpha_one_sided = sprintf("%.4f", alpha_one_sided),
+    alpha_two_sided = sprintf("%.4f", alpha_two_sided),
+    z_boundary      = sprintf("%.3f", z_boundary),
+    chisq_boundary  = sprintf("%.3f", chisq_boundary)
+  ) %>%
+  tibble::column_to_rownames("Analysis") %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column("Parameter") %>%
+  mutate(
+    Parameter = c(
+      "Information fraction ($t^*$)",
+      "Cumulative alpha spent",
+      "One-sided $\\alpha$-level",
+      "Two-sided $\\alpha$-level",
+      "$z$-test boundary",
+      "$\\chi^2$-test boundary"
+    )
+  )
+
+interim_tab_t %>%
+  kable(
+    format = "latex",
+    booktabs = TRUE,
+    escape = FALSE,
+    align = c("l", "c", "c"),
+    col.names = c(
+      "Parameter",
+      "Interim analysis",
+      "Final primary analysis"
+    )
+  ) %>%
+  kable_styling(
+    latex_options = "hold_position"
+  )
+
+###############
+# sample size #
+###############
+
+mu0_log<-0.307
+mu0_exp<-exp(mu0_log)-1
+mu1_exp<-1.5*mu0_exp
+mu1_log<-log(mu1_exp+1)
+sigma<-0.177
+effect_size<-(mu1_log-mu0_log)/sigma
+
+# 2:1 allocation
+# df=3*n-2
+# ncp=sqrt(2*n/3)*effect_size
+uniroot(function(n)pt(qt(0.05,df=3*n-2,lower.tail=FALSE),df=3*n-2,ncp=sqrt(2*n/3)*effect_size,lower.tail=FALSE)-0.85,c(3,50))$root
+
+###########################################
+# futility inflation of type 2 error rate #
+###########################################
+
+rate1<-0.5
+rate2<-1
+drift<--(qnorm(0.05)+qnorm(0.15))
+mu<-drift*sqrt(c(rate1,rate2))
+sigma<-rbind(
+  c(1,sqrt(rate1)),
+  c(sqrt(rate1),1))
+
+boundary1<-0.1
+boundary2<--qnorm(0.05)
+1-pmvnorm(
+  lower=c(boundary1,boundary2),
+  upper=c(Inf,Inf),
+  mean=mu,
+  sigma=sigma)
+
+boundary1<-0.1
+boundary2<--qnorm(0.05)
+1-pmvnorm(
+  lower=c(-Inf,boundary2),
+  upper=c(Inf,Inf),
+  mean=mu,
+  sigma=sigma)
+
+
+```
