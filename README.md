@@ -580,3 +580,154 @@ boundary2<--qnorm(0.05)
 
 
 ```
+
+
+
+### formatted table
+```
+```
+
+```
+library(mvtnorm)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+rate1 <- 0.5
+rate2 <- 1
+
+alpha <- 0.05
+beta  <- 0.15
+
+drift <- -(qnorm(alpha / 2) + qnorm(beta))
+
+mu <- drift * sqrt(c(rate1, rate2))
+
+rho <- sqrt(rate1 / rate2)
+
+sigma <- matrix(
+  c(1, rho,
+    rho, 1),
+  nrow = 2
+)
+
+boundary1 <- 0.1
+boundary2 <- -qnorm(alpha / 2)
+
+power_futility <- as.numeric(
+  pmvnorm(
+    lower = c(boundary1, boundary2),
+    upper = c(Inf, Inf),
+    mean  = mu,
+    sigma = sigma
+  )
+)
+
+power_no_futility <- as.numeric(
+  pmvnorm(
+    lower = c(-Inf, boundary2),
+    upper = c(Inf, Inf),
+    mean  = mu,
+    sigma = sigma
+  )
+)
+
+beta_futility    <- 1 - power_futility
+beta_no_futility <- 1 - power_no_futility
+
+beta_increase  <- beta_futility - beta_no_futility
+beta_inflation <- beta_futility / beta_no_futility
+
+cond_mean <- mu[2] + rho * (boundary1 - mu[1])
+cond_sd   <- sqrt(1 - rho^2)
+
+conditional_power <- pnorm(
+  boundary2,
+  mean = cond_mean,
+  sd = cond_sd,
+  lower.tail = FALSE
+)
+
+prob_futility <- pnorm(
+  boundary1,
+  mean = mu[1],
+  sd = 1
+)
+
+lost_power <- as.numeric(
+  pmvnorm(
+    lower = c(-Inf, boundary2),
+    upper = c(boundary1, Inf),
+    mean  = mu,
+    sigma = sigma
+  )
+)
+
+results <- data.frame(
+  Parameter = c(
+    "Information fraction at interim",
+    "Futility boundary",
+    "Conditional power at futility boundary",
+    "Probability of stopping for futility",
+    "Power without futility",
+    "Power with futility",
+    "Type II error without futility",
+    "Type II error with futility",
+    "Absolute increase in Type II error",
+    "Relative inflation in Type II error"
+  ),
+  Value = c(
+    rate1,
+    boundary1,
+    conditional_power,
+    prob_futility,
+    power_no_futility,
+    power_futility,
+    beta_no_futility,
+    beta_futility,
+    beta_increase,
+    beta_inflation
+  )
+)
+
+results_display <- data.frame(
+  Parameter = c(
+    "Information fraction at interim",
+    "Futility boundary ($Z$)",
+    "Conditional power at futility boundary",
+    "Probability of stopping for futility under $H_1$",
+    "Power without futility",
+    "Power with futility",
+    "Type II error without futility",
+    "Type II error with futility",
+    "Absolute Type II error increase",
+    "Relative Type II error inflation"
+  ),
+  Value = c(
+    sprintf("%.2f", rate1),
+    sprintf("%.2f", boundary1),
+    sprintf("%.1f\\%%", 100 * conditional_power),
+    sprintf("%.1f\\%%", 100 * prob_futility),
+    sprintf("%.1f\\%%", 100 * power_no_futility),
+    sprintf("%.1f\\%%", 100 * power_futility),
+    sprintf("%.1f\\%%", 100 * beta_no_futility),
+    sprintf("%.1f\\%%", 100 * beta_futility),
+    sprintf("%.1f percentage points", 100 * beta_increase),
+    sprintf("%.2f-fold", beta_inflation)
+  )
+)
+
+results_display |>
+  kable(
+    format = "latex",
+    booktabs = TRUE,
+    escape = FALSE,
+    col.names = c("Operating characteristic", "Value"),
+    align = c("l", "r"),
+    caption = "Operating characteristics of the interim futility analysis."
+  ) |>
+  kable_styling(
+    latex_options = c("hold_position")
+  )
+
+```
